@@ -1,6 +1,6 @@
 import { Alert, FlatList, Pressable, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Order, OrderStatus, Service, orders, services } from "../data/services";
+import { Order, OrderStatus, Service, orders, services } from "../data/service";
 import { colors, styles } from "../constants/styles";
 
 // ---------- CUSTOM FUNCTION (modul 5.3.B) ----------
