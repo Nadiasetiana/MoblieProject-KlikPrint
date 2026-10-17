@@ -1,29 +1,31 @@
 import { View, Text, ScrollView, Pressable, Alert } from "react-native";
+import {useRouter} from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { styles } from "../constants/styles";
+import { useTheme } from "../constants/themecontext";
 
-// ---------- TYPE & INTERFACE (modul 5.5.B) ----------
+//TYPE & INTERFACE
 type OrderStatus = "menunggu" | "dicetak" | "selesai";
 
 interface Service {
-  readonly id: string;
+  id: string;
   name: string;
   description: string;
   price: number;
-  badge?: string; // opsional
+  badge?: string;
 }
 
 interface Order {
-  readonly id: string;
+  id: string;
   title: string;
   total: number;
   status: OrderStatus;
 }
 
-// ---------- ARRAY OF OBJECTS (modul 5.5.A) ----------
+//ARRAY OF OBJECTS
 const services: Service[] = [
-  { id: "1", name: "Cetak Dokumen", description: "PDF, Word, tugas kuliah", price: 500 },
-  { id: "2", name: "Cetak Foto", description: "Berbagai ukuran foto", price: 3000, badge: "Populer" },
+  { id: "1", name: "Cetak Dokumen", description: "PDF, Word, tugas kuliah", price: 500, badge: "Populer"},
+  { id: "2", name: "Cetak Foto", description: "Berbagai ukuran foto", price: 500},
   { id: "3", name: "Cetak Poster", description: "A3, A2, A1 untuk acara", price: 15000 },
 ];
 
@@ -33,65 +35,72 @@ const orders: Order[] = [
   { id: "KP-0019", title: "Foto Wisuda (4R)", total: 18000, status: "selesai" },
 ];
 
-// ---------- CONDITION (modul 5.2) ----------
+//CONDITION
 const getStatusColor = (status: OrderStatus) => {
-  if (status === "selesai") {
-    return "#DCFCE7"; // hijau muda
-  } else if (status === "dicetak") {
-    return "#DBEAFE"; // biru muda
-  } else {
-    return "#FEF3C7"; // kuning muda
-  }
-};
-
-// ---------- CUSTOM FUNCTION (modul 5.3.B) ----------
-const renderServiceCard = (service: Service) => {
-  // fungsi bawaan: Alert.alert (modul 5.3.A)
-  const handlePress = () => {
-    Alert.alert(service.name, "Harga Rp " + service.price + " per lembar");
-  };
-
-  return (
-    <Pressable key={service.id} style={styles.card} onPress={handlePress}>
-      <Ionicons name="print-outline" size={28} color="green" />
-      <View style={styles.cardBody}>
-        <Text style={styles.cardTitle}>{service.name}</Text>
-        {service.badge ? <Text style={styles.badge}>{service.badge}</Text> : null}
-        <Text style={styles.cardSubtitle}>{service.description}</Text>
-        <Text style={styles.cardPrice}>Rp {service.price} / lembar</Text>
-      </View>
-    </Pressable>
-  );
-};
-
-const renderOrderCard = (order: Order) => {
-  return (
-    <View key={order.id} style={styles.card}>
-      <View style={styles.cardBody}>
-        <Text style={styles.cardTitle}>{order.title}</Text>
-        <Text style={styles.cardSubtitle}>{order.id}</Text>
-        <Text style={styles.cardPrice}>Rp {order.total}</Text>
-      </View>
-      {/* INLINE STYLE (modul 3.3): warna berubah sesuai status */}
-      <Text style={{ backgroundColor: getStatusColor(order.status), padding: 6, borderRadius: 8 }}>
-        {order.status}
-      </Text>
-    </View>
-  );
+  if (status === "selesai") return "#84ffaf"; 
+  else if (status === "dicetak") return "#95bbee"; 
+  else return "#faf3d9";
 };
 
 export default function Index() {
+  const router = useRouter();
+  const { darkMode } = useTheme();
+
+  const backgroundColor = darkMode ? "#101827" : "#f6f0f4";
+  const textColor = darkMode ? "#FFFFFF" : "#000000";
+  const subtitleColor = darkMode ? "#CBD5E1" : "gray";
+  const cardColor = darkMode ? "#1E293B" : "#FFFFFF";
+
+  const formatRupiah = (amount: number) =>
+    "Rp " + amount.toLocaleString("id-ID");
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Klikprint</Text>
-      <Text style={styles.subtitle}>Cetak dokumen, foto, dan poster tanpa antre.</Text>
+    <ScrollView
+      style={[styles.container, { backgroundColor }]}
+      contentContainerStyle={{ paddingBottom: 24 }}
+    >
+      <Text style={[styles.title, { color: textColor }]}> KlikPrint </Text>
+      <Text style={[styles.subtitle, { color: subtitleColor }]}> Cetak dokumen, foto, dan poster tanpa antre. </Text>
 
-      <Text style={styles.sectionTitle}>Layanan Cetak</Text>
-      {/* LOOP: map() + key (modul 5.4.A) */}
-      {services.map((service) => renderServiceCard(service))}
+      <Pressable style={styles.themeButton} onPress={() => router.push("/theme")} >
+        <Ionicons name={darkMode ? "moon" : "sunny"} size={18} color="#FFFFFF" />
+        <Text style={styles.themeButtonText}> {darkMode ? "Dark Mode" : "Light Mode"} · Pengaturan Tema </Text>
+      </Pressable>
 
-      <Text style={styles.sectionTitle}>Pesanan Terakhir</Text>
-      {orders.map((order) => renderOrderCard(order))}
+      <Text style={[styles.sectionTitle, { color: textColor }]}> Layanan Cetak </Text>
+
+      {services.map((service) => (
+        <Pressable
+          key={service.id} style={[styles.card, { backgroundColor: cardColor }]} 
+          onPress={() => Alert.alert( service.name,`Harga ${formatRupiah(service.price)} per lembar`)}
+        >
+          <Ionicons name="print" size={28} color="green" />
+
+          <View style={styles.cardBody}>
+          <Text style={[styles.cardTitle, { color: textColor }]}> {service.name}</Text>
+           {service.badge ? (<Text style={styles.badge}>{service.badge}</Text>) : null}
+            <Text style={[ styles.cardSubtitle, { color: subtitleColor }, ]} > service.description} </Text>
+
+            <Text style={styles.cardPrice}> {formatRupiah(service.price)} / lembar </Text>
+          </View>
+        </Pressable>
+      ))}
+
+      <Text style={[styles.sectionTitle, { color: textColor }]}> Pesanan Terakhir </Text>
+
+      {orders.map((order) => (
+        <Pressable key={order.id} style={[styles.card, { backgroundColor: cardColor }]}
+          onPress={() => router.push({ pathname: "/orders/[id]", params: { id: order.id }, }) }
+        >
+          <View style={styles.cardBody}>
+            <Text style={[styles.cardTitle, { color: textColor }]}> {order.title}</Text>
+            <Text style={[ styles.cardSubtitle, { color: subtitleColor },]}> {order.id} </Text>
+            <Text style={styles.cardPrice}> {formatRupiah(order.total)}</Text>
+          </View>
+
+          <Text style={[ styles.status, { backgroundColor: getStatusColor(order.status) }, ]}> {order.status} </Text>
+        </Pressable>
+      ))}
     </ScrollView>
   );
 }
