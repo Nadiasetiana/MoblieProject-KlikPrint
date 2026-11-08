@@ -1,6 +1,19 @@
 import { Stack } from "expo-router";
+import { ThemeProvider } from "../constants/themecontext";
+import { OrderProvider } from "../constants/ordercontext";
 
-// Layout minimal: satu layar saja (index.tsx), tanpa tab bawaan template
 export default function RootLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <ThemeProvider>
+      <OrderProvider>
+        <Stack screenOptions={{ headerShown: true }}>
+          <Stack.Screen name="index" options={{ title: "KlikPrint", headerShown: false }}/>
+          <Stack.Screen name="theme" options={{ title: "Pengaturan Tema" }}/>
+          <Stack.Screen name="orders/[id]" options={{ title: "Detail Pesanan" }}/>
+          <Stack.Screen name="orders/new" options={{ title: "Buat Pesanan", presentation: "modal" }}/>
+          <Stack.Screen name="delivery" options={{ title: "Cek Area Pengantaran" }}/>
+        </Stack>
+      </OrderProvider>
+    </ThemeProvider>
+  );
 }

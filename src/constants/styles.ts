@@ -1,125 +1,147 @@
 import { StyleSheet } from "react-native";
 
-// EXTERNAL STYLE (modul 3.2): style ditulis di file terpisah, lalu di-import ke index.tsx
-export const colors = {
-  teal: "#0F8B6D",
-  pink: "#F48FB1",
-  background: "#EEF0FF",
-  card: "#FFFFFF",
-  textDark: "#0F172A",
-  textGray: "#64748B",
-};
-
+// EXTERNAL STYLE (modul 3.2)
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: "#f6f0f4",
+    padding: 30,
   },
-  content: {
-    padding: 20,
-  },
-  header: {
-    backgroundColor: colors.teal,
-    paddingTop: 48,
-    paddingBottom: 24,
-    paddingHorizontal: 20,
-  },
-  logo: {
-    fontSize: 14,
+  title: {
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#FFFFFF",
-    marginBottom: 12,
+    color: "black",
+    marginTop: 40,
   },
-  greeting: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-  },
-  greetingSub: {
+  subtitle: {
     fontSize: 14,
-    color: "#E2E8F0",
-    marginTop: 4,
+    color: "gray",
+    marginBottom: 10,
+  },
+  themeButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 8,
+    backgroundColor: "#2563EB",
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    marginTop: 8,
+    marginBottom: 20,
+  },
+  themeButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "600",
+    fontSize: 13,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: colors.textDark,
-    marginTop: 20,
-    marginBottom: 12,
+    marginBottom: 10,
+  },
+  sectionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 10,
   },
   card: {
-    backgroundColor: colors.card,
+    backgroundColor: "#FFFFFF",
     padding: 16,
     borderRadius: 16,
     marginBottom: 12,
     flexDirection: "row",
     alignItems: "center",
-    elevation: 3,
-    shadowColor: "#000",
-  },
-  cardIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: colors.background,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
   },
   cardBody: {
     flex: 1,
+    marginLeft: 15,
   },
   cardTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: colors.textDark,
   },
   cardSubtitle: {
     fontSize: 13,
-    color: colors.textGray,
+    color: "gray",
     marginTop: 2,
   },
   cardPrice: {
     fontSize: 13,
     fontWeight: "bold",
-    color: colors.teal,
+    color: "green",
     marginTop: 4,
   },
   badge: {
-    backgroundColor: colors.pink,
+    backgroundColor: "#F48FB1",
     color: "#FFFFFF",
     fontSize: 11,
     fontWeight: "bold",
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 8,
-    marginLeft: 8,
+    alignSelf: "flex-start",
   },
-  titleRow: {
+  status: {
+    padding: 6,
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+  // Kartu "Kata Semangat" (fitur baru)
+  quoteCard: {
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 12,
+  },
+  quoteHeader: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
   },
-  statusText: {
-    fontSize: 12,
-    fontWeight: "bold",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
-  },
-  orderTotal: {
+  quoteLabel: {
     fontSize: 14,
     fontWeight: "bold",
-    color: colors.textDark,
-    marginTop: 4,
   },
-  button: {
-    backgroundColor: colors.pink,
-    padding: 14,
-    borderRadius: 12,
-    alignItems: "center",
+  quoteText: {
+    fontSize: 14,
+    fontStyle: "italic",
+    lineHeight: 20,
     marginTop: 8,
   },
-  buttonText: {
+  quoteAuthor: {
+    fontSize: 13,
+    marginTop: 6,
+    textAlign: "right",
+  },
+  quoteError: {
+    color: "#DC2626",
+    fontSize: 13,
+    marginTop: 8,
+  },
+  // Tombol "Cek Area Pengantaran" (fitur baru)
+  deliveryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: "#F59E0B",
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  // Tombol "Buat Pesanan" (fitur baru)
+  newOrderButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: "green",
+    padding: 14,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  newOrderButtonText: {
     color: "#FFFFFF",
     fontWeight: "bold",
     fontSize: 15,

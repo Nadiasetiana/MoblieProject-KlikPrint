@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 
+// ---------- TYPE & INTERFACE ----------
 export type ServiceType = "dokumen" | "foto" | "poster";
 export type OrderStatus = "menunggu" | "dicetak" | "selesai";
 
@@ -18,8 +19,13 @@ export interface Order {
   title: string;
   total: number;
   status: OrderStatus;
+  serviceName?: string; // opsional: diisi saat pesanan dibuat dari form
+  sheets?: number; // opsional: jumlah lembar
+  discount?: number; // opsional: potongan dari kode promo
+  voucherCode?: string; // opsional: kode promo yang dipakai
 }
 
+// ---------- ARRAY OF OBJECTS ----------
 export const services: Service[] = [
   {
     id: "1",
@@ -28,15 +34,15 @@ export const services: Service[] = [
     price: 500,
     type: "dokumen",
     icon: "document-text-outline",
+    badge: "Populer",
   },
   {
     id: "2",
     name: "Cetak Foto",
     description: "Berbagai ukuran foto",
-    price: 3000,
+    price: 500,
     type: "foto",
     icon: "image-outline",
-    badge: "Populer",
   },
   {
     id: "3",
@@ -53,3 +59,13 @@ export const orders: Order[] = [
   { id: "KP-0020", title: "Poster Acara KKN", total: 45000, status: "menunggu" },
   { id: "KP-0019", title: "Foto Wisuda (4R)", total: 18000, status: "selesai" },
 ];
+
+// ---------- CUSTOM FUNCTION ----------
+export const formatRupiah = (amount: number): string => "Rp " + amount.toLocaleString("id-ID");
+
+// CONDITION: warna badge status
+export const getStatusColor = (status: OrderStatus): string => {
+  if (status === "selesai") return "#84ffaf";
+  else if (status === "dicetak") return "#95bbee";
+  else return "#faf3d9";
+};
