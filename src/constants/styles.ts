@@ -15,6 +15,33 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: colors.textDark,
+    marginTop: 24,
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: colors.textGray,
+    marginBottom: 16,
+  },
+  themeButton: {
+    backgroundColor: colors.teal,
+    padding: 12,
+    borderRadius: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    marginBottom: 4,
+  },
+  themeButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 14,
+    marginLeft: 8,
+  },
   content: {
     padding: 20,
   },
@@ -105,6 +132,14 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 10,
+  },
+  status: {
+    fontSize: 12,
+    fontWeight: "bold",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
+    overflow: "hidden",
   },
   orderTotal: {
     fontSize: 14,

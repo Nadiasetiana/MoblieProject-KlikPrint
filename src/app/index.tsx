@@ -1,103 +1,291 @@
-import { Alert, FlatList, Pressable, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, ScrollView, Pressable, Alert, Image, ActivityIndicator, } from "react-native";
+
+import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Order, OrderStatus, Service, orders, services } from "../data/services";
-import { colors, styles } from "../constants/styles";
 
-// ---------- CUSTOM FUNCTION (modul 5.3.B) ----------
-// Mengubah angka jadi format rupiah
-const formatRupiah = (amount: number): string => {
-  return "Rp " + amount.toLocaleString("id-ID");
-};
+import { styles } from "../constants/styles";
+import * as themecontext from "../context/themecontext";
 
-// Menentukan warna badge status (pakai condition, modul 5.2)
-const getStatusColor = (status: OrderStatus): string => {
-  if (status === "selesai") {
-    return "#DCFCE7"; // hijau muda
-  } else if (status === "dicetak") {
-    return "#DBEAFE"; // biru muda
-  } else {
-    return "#FEF3C7"; // kuning muda
-  }
-};
+import { orders, type OrderStatus } from "../data/orders";
+import { services } from "../data/services";
 
-// Custom function yang mengembalikan komponen kartu layanan
-const renderServiceCard = (service: Service) => {
-  // FUNCTION BAWAAN (modul 5.3.A): Alert.alert
-  const handlePress = () => {
-    Alert.alert(service.name, `Harga mulai ${formatRupiah(service.price)} per lembar`);
-  };
+import type { Product } from "../types/product";
+import { getProducts } from "../services/api";
 
-  return (
-    <Pressable key={service.id} style={styles.card} onPress={handlePress}>
-      <View style={styles.cardIcon}>
-        <Ionicons name={service.icon} size={26} color={colors.teal} />
-      </View>
-      <View style={styles.cardBody}>
-        <View style={styles.titleRow}>
-          <Text style={styles.cardTitle}>{service.name}</Text>
-          {service.badge ? <Text style={styles.badge}>{service.badge}</Text> : null}
-        </View>
-        <Text style={styles.cardSubtitle}>{service.description}</Text>
-        <Text style={styles.cardPrice}>{formatRupiah(service.price)} / lembar</Text>
-      </View>
-    </Pressable>
-  );
-};
-
-// Custom function untuk satu baris pesanan (dipakai oleh FlatList)
-const renderOrderItem = (order: Order) => {
-  return (
-    <View style={styles.card}>
-      <View style={styles.cardBody}>
-        <Text style={styles.cardTitle}>{order.title}</Text>
-        <Text style={styles.cardSubtitle}>{order.id}</Text>
-        <Text style={styles.orderTotal}>{formatRupiah(order.total)}</Text>
-      </View>
-      {/* INLINE STYLE (modul 3.3): warna bergantung pada nilai status (dinamis) */}
-      <Text
-        style={[
-          styles.statusText,
-          { backgroundColor: getStatusColor(order.status), color: colors.textDark },
-        ]}
-      >
-        {order.status.toUpperCase()}
-      </Text>
-    </View>
-  );
+// Fungsi menentukan warna status pesanan
+const getStatusColor = (status: OrderStatus) => {
+  if (status === "selesai") return "#84ffaf";
+  else if (status === "dicetak") return "#95bbee";
+  else return "#faf3d9";
 };
 
 export default function Index() {
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>Klikprint</Text>
-        <Text style={styles.greeting}>Hai, mau ngeprint ya?</Text>
-        <Text style={styles.greetingSub}>Cetak dokumen, foto, dan poster tanpa antre.</Text>
-      </View>
+  const router = useRouter();
+  const { darkMode, toggleTheme } = themecontext.useTheme();
 
-      {/* LOOP 1: FlatList untuk daftar pesanan (modul 5.4.B), header memuat layanan */}
-      <FlatList
-        data={orders}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => renderOrderItem(item)}
-        contentContainerStyle={styles.content}
-        ListHeaderComponent={
-          <View>
-            <Text style={[styles.sectionTitle, { marginTop: 0 }]}>Layanan Cetak</Text>
-            {/* LOOP 2: map() untuk daftar layanan (modul 5.4.A), key = id */}
-            {services.map((service) => renderServiceCard(service))}
-            <Text style={styles.sectionTitle}>Pesanan Terakhir</Text>
+  // State untuk menyimpan produk API
+  const [products, setProducts] = useState<Product[]>([]);
+
+  // State loading
+  const [loading, setLoading] = useState(true);
+
+  // State error
+  const [error, setError] = useState("");
+
+  // Custom asynchronous function
+  async function loadProducts() {
+    try {
+      setLoading(true);
+      setError("");
+
+      const result = await getProducts();
+
+      setProducts(result);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Terjadi kesalahan"
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Mengambil produk saat halaman pertama dibuka
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  // Pengaturan warna berdasarkan tema
+  const backgroundColor = darkMode ? "#101827" : "#f6f3f5";
+  const textColor = darkMode ? "#FFFFFF" : "#000000";
+  const subtitleColor = darkMode ? "#0c3f7e" : "grey";
+  const cardColor = darkMode ? "#1E293B" : "#FFFFFF";
+
+  // Format harga ke Rupiah
+  const formatRupiah = (amount: number) =>
+    "Rp " + amount.toLocaleString("id-ID");
+
+  return (
+    <ScrollView
+      style={[styles.container, { backgroundColor }]}
+      contentContainerStyle={{ paddingBottom: 24 }}
+    >
+      {/* Judul aplikasi */}
+      <Text style={[styles.title, { color: textColor }]}>
+        KlikPrint
+      </Text>
+
+      <Text style={[styles.subtitle, { color: subtitleColor }]}>
+        Cetak dokumen, foto, dan poster tanpa antre.
+      </Text>
+
+      {/* Tombol Dark Mode */}
+      <Pressable
+        style={styles.themeButton}
+        onPress={toggleTheme}
+      >
+        <Ionicons
+          name={darkMode ? "moon" : "sunny"}
+          size={18}
+          color="#FFFFFF"
+        />
+
+        <Text style={styles.themeButtonText}>
+          {darkMode ? "Dark Mode" : "Light Mode"} · Pengaturan Tema
+        </Text>
+      </Pressable>
+
+      {/* Layanan Cetak */}
+      <Text style={[styles.sectionTitle, { color: textColor }]}>
+        Layanan Cetak
+      </Text>
+
+      {services.map((service) => (
+        <Pressable
+          key={service.id}
+          style={[
+            styles.card,
+            { backgroundColor: cardColor },
+          ]}
+          onPress={() =>
+            Alert.alert(
+              service.name,
+              `Harga ${formatRupiah(service.price)} per lembar`
+            )
+          }
+        >
+          <Ionicons
+            name={service.icon}
+            size={28}
+            color="green"
+          />
+
+          <View style={styles.cardBody}>
+            <Text style={[styles.cardTitle, { color: textColor }]}>
+              {service.name}
+            </Text>
+
+            {service.badge ? (
+              <Text style={styles.badge}>
+                {service.badge}
+              </Text>
+            ) : null}
+
+            <Text
+              style={[
+                styles.cardSubtitle,
+                { color: subtitleColor },
+              ]}
+            >
+              {service.description}
+            </Text>
+
+            <Text style={styles.cardPrice}>
+              {formatRupiah(service.price)} / lembar
+            </Text>
           </View>
-        }
-        ListFooterComponent={
-          <Pressable
-            style={styles.button}
-            onPress={() => Alert.alert("Klikprint", "Fitur pesan baru menyusul di modul berikutnya")}
-          >
-            <Text style={styles.buttonText}>Mulai Pesan</Text>
+        </Pressable>
+      ))}
+
+      {/* Rekomendasi Produk dari API */}
+      <Text style={[styles.sectionTitle, { color: textColor }]}>
+        Rekomendasi Produk
+      </Text>
+
+      {/* Kondisi loading */}
+      {loading && (
+        <View style={{ padding: 20, alignItems: "center" }}>
+          <ActivityIndicator size="large" color="green" />
+
+          <Text style={{ color: textColor }}>
+            Memuat produk...
+          </Text>
+        </View>
+      )}
+
+      {/* Kondisi error */}
+      {!!error && (
+        <View style={{ padding: 15 }}>
+          <Text style={{ color: "red" }}>
+            {error}
+          </Text>
+
+          <Pressable onPress={loadProducts}>
+            <Text style={{ color: "green", marginTop: 8 }}>
+              Coba Lagi
+            </Text>
           </Pressable>
-        }
-      />
-    </View>
+        </View>
+      )}
+
+      {/* Menampilkan produk dari API */}
+      {!loading &&
+        !error &&
+        products.map((product) => (
+          <View
+            key={product.id}
+            style={[
+              styles.card,
+              {
+                backgroundColor: cardColor,
+                alignItems: "center",
+              },
+            ]}
+          >
+            <Image
+              source={{ uri: product.thumbnail }}
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: 8,
+              }}
+            />
+
+            <View style={styles.cardBody}>
+              <Text
+                style={[
+                  styles.cardTitle,
+                  { color: textColor },
+                ]}
+              >
+                {product.title}
+              </Text>
+
+              <Text
+                style={[
+                  styles.cardSubtitle,
+                  { color: subtitleColor },
+                ]}
+                numberOfLines={2}
+              >
+                {product.description}
+              </Text>
+
+              <Text style={styles.cardPrice}>
+                {formatRupiah(product.price)}
+              </Text>
+            </View>
+          </View>
+        ))}
+
+      {/* Pesanan Terakhir */}
+      <Text style={[styles.sectionTitle, { color: textColor }]}>
+        Pesanan Terakhir
+      </Text>
+
+      {orders.map((order) => (
+        <Pressable
+          key={order.id}
+          style={[
+            styles.card,
+            { backgroundColor: cardColor },
+          ]}
+          onPress={() =>
+            router.push({
+              pathname: "/orders/[id]",
+              params: { id: order.id },
+            })
+          }
+        >
+          <View style={styles.cardBody}>
+            <Text
+              style={[
+                styles.cardTitle,
+                { color: textColor },
+              ]}
+            >
+              {order.title}
+            </Text>
+
+            <Text
+              style={[
+                styles.cardSubtitle,
+                { color: subtitleColor },
+              ]}
+            >
+              {order.id}
+            </Text>
+
+            <Text style={styles.cardPrice}>
+              {formatRupiah(order.total)}
+            </Text>
+          </View>
+
+          <Text
+            style={[
+              styles.status,
+              {
+                backgroundColor: getStatusColor(order.status),
+              },
+            ]}
+          >
+            {order.status}
+          </Text>
+        </Pressable>
+      ))}
+    </ScrollView>
   );
 }
