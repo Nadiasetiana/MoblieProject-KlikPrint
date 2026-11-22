@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 
+// EXTERNAL STYLE (modul 3.2)
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -39,8 +40,14 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
   },
+  sectionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
   card: {
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
     padding: 16,
     borderRadius: 16,
     marginBottom: 12,
@@ -58,6 +65,7 @@ export const styles = StyleSheet.create({
   cardSubtitle: {
     fontSize: 13,
     color: "gray",
+    marginTop: 2,
   },
   cardPrice: {
     fontSize: 13,
@@ -66,8 +74,8 @@ export const styles = StyleSheet.create({
     marginTop: 4,
   },
   badge: {
-    backgroundColor: "pink",
-    color: "white",
+    backgroundColor: "#F48FB1",
+    color: "#FFFFFF",
     fontSize: 11,
     padding: 4,
     borderRadius: 8,
@@ -77,5 +85,84 @@ export const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 8,
     overflow: "hidden",
+  },
+  // Kartu pengguna + tombol Keluar (Modul 4)
+  userCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 14,
+    borderRadius: 16,
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  signOutButton: {
+    borderWidth: 1,
+    borderColor: "#DC2626",
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    minWidth: 72,
+    alignItems: "center",
+  },
+  signOutText: {
+    color: "#DC2626",
+    fontWeight: "bold",
+  },
+  // Kartu "Libur Nasional Terdekat" (fitur baru)
+  holidayCard: {
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 12,
+  },
+  holidayHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  holidayLabel: {
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  holidayText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    lineHeight: 20,
+    marginTop: 8,
+  },
+  holidayDate: {
+    fontSize: 13,
+    marginTop: 4,
+  },
+  holidayErrorText: {
+    color: "#DC2626",
+    fontSize: 13,
+    marginTop: 8,
+  },
+  // Tombol "Cek Area Pengantaran" (fitur baru)
+  deliveryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: "#F59E0B",
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  // Tombol "Buat Pesanan" (fitur baru)
+  newOrderButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: "green",
+    padding: 14,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  newOrderButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 15,
   },
 });
